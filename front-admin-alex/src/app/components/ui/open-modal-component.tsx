@@ -10,8 +10,8 @@ export const OpenModalComponent: React.FC<Props> = ({ openUpdateModal, openDelet
 
      return (
           <div className="flex items-center gap-2">
-               <ButtonModalOpen onClick={openUpdateModal} text="Изменить" typeColor="EDIT" />
-               <ButtonModalOpen onClick={openDeleteModal} text="Удалить" typeColor="DELETE" />
+               <ButtonModalOpen onClick={openUpdateModal} text="Edit" typeColor="EDIT" />
+               <ButtonModalOpen onClick={openDeleteModal} text="Delete" typeColor="DELETE" />
           </div>
      )
 }

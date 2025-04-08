@@ -11,8 +11,8 @@ export const Login = () => {
           mode: "uncontrolled",
           initialValues: { login: "", password: "" },
           validate: {
-               login: (value) => (value.length < 5 ? "Минимальная длинна логина 5 символов!" : null),
-               password: (value) => (value.length < 6 ? "Минимальная длинна пароля 6 символов!" : null),
+               login: (value) => (value.length < 5 ? "Minimum login length is 5 characters!" : null),
+               password: (value) => (value.length < 6 ? "Minimum password length is 6 characters!" : null),
           },
      });
 
@@ -26,7 +26,7 @@ export const Login = () => {
           try {
                await login(data).unwrap()
                await triggerCurrentQuery().unwrap()
-               succeed("Вы вошли в систему!")
+               succeed("You're logged in!")
                form.reset()
                navigate("/")
 
@@ -39,14 +39,14 @@ export const Login = () => {
      return (
           <form onSubmit={form.onSubmit(onSubmit)} className="flex flex-col gap-4">
                <TextInput
-                    label="Логин"
-                    placeholder="Введите логин"
+                    label="Login"
+                    placeholder="Enter login"
                     key={form.key("login")}
                     {...form.getInputProps("login")}
                />
                <PasswordInput
-                    label="Пароль"
-                    placeholder="Введите пароль"
+                    label="Password"
+                    placeholder="Enter password"
                     key={form.key("password")}
                     {...form.getInputProps("password")}
                />

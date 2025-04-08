@@ -17,7 +17,7 @@ type Props = {
      color?: string
 }
 
-export const Item: React.FC<Props> = ({ id, index, name, color = "" }) => {
+export const Status: React.FC<Props> = ({ id, index, name, color = "" }) => {
      const [opened, { open, close }] = useDisclosure(false);
      const { typeModal, openUpdateModal, openDeleteModal } = useChangeTypeModal({ open })
      const { succeed, error } = useNotification()
@@ -30,7 +30,7 @@ export const Item: React.FC<Props> = ({ id, index, name, color = "" }) => {
      const deleteItem = async () => {
           try {
                await deleteStatuses(id).unwrap();
-               succeed("Статус удалён!")
+               succeed("Status removed!")
                await triggerAllStatuses().unwrap();
                close()
 
@@ -64,7 +64,7 @@ export const Item: React.FC<Props> = ({ id, index, name, color = "" }) => {
                          <DeleteModals
                               opened={opened}
                               close={close}
-                              title={`Подтвердите удаление '${name}'`}
+                              title={`Confirm deletion of '${name}'`}
                               onClick={deleteItem}
                               typeModal={typeModal}
                          />

@@ -19,7 +19,7 @@ export const errorMessages = (err: any) => {
 
      return hasErrorField(err)
           ? err?.data?.message
-          : err?.message ?? "Что-то пошло не так. Попробуйте снова.";
+          : err?.message ?? "Something went wrong. Try it again.";
 }
 
 

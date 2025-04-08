@@ -13,8 +13,8 @@ export const AddUserForm = () => {
           mode: "uncontrolled",
           initialValues: { login: "", password: "", role: "USER" },
           validate: {
-               login: (value) => (value.length < 5 ? "Минимальная длинна логина 5 символов!" : null),
-               password: (value) => (value.length < 6 ? "Минимальная длинна пароля 6 символов!" : null),
+               login: (value) => (value.length < 5 ? "Minimum login length is 5 characters!" : null),
+               password: (value) => (value.length < 6 ? "Minimum password length is 6 characters!" : null),
           },
      });
 
@@ -26,7 +26,7 @@ export const AddUserForm = () => {
      const onSubmit = async (data: Register) => {
           try {
                await registration(data).unwrap()
-               succeed("Пользователь добавлен!")
+               succeed("User added!")
                form.reset()
                await triggerAllUsersQuery().unwrap()
 
@@ -39,25 +39,25 @@ export const AddUserForm = () => {
      return (
           decoded.role === ROLES.ADMIN && <form onSubmit={form.onSubmit(onSubmit)} className="flex flex-col gap-2">
                <TextInput
-                    label="Логин"
-                    placeholder="Введите логин"
+                    label="Login"
+                    placeholder="Enter login"
                     key={form.key("login")}
                     {...form.getInputProps("login")}
                />
                <PasswordInput
-                    label="Пароль"
-                    placeholder="Введите пароль"
+                    label="Password"
+                    placeholder="Enter password"
                     key={form.key("password")}
                     {...form.getInputProps("password")}
                />
                <Select
-                    label="Роль"
-                    placeholder="Выберите роль пользователя"
+                    label="Role"
+                    placeholder="Select the user role"
                     key={form.key("role")}
                     {...form.getInputProps("role")}
                     data={roles}
                />
-               <ButtonSubmit loading={isLoading} text={"Добавить пользователя"} />
+               <ButtonSubmit loading={isLoading} text={"Add user"} />
           </form>
      )
 }

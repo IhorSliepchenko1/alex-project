@@ -2,7 +2,7 @@ export const useCalendarInputDate = () => {
      const formatDate = (date: Date | string, includeTime = true) => {
           const initial = date instanceof Date ? date : new Date(date);
 
-          if (isNaN(initial.getTime())) return "Некорректная дата";
+          if (isNaN(initial.getTime())) return "Incorrect date";
 
           const dd = String(initial.getDate()).padStart(2, "0");
           const mm = String(initial.getMonth() + 1).padStart(2, "0");

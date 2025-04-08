@@ -6,6 +6,6 @@ type Props = {
 
 export const ButtonCancel: React.FC<Props> = ({ close }) => {
      return (
-          <Button onClick={close} variant="default">Отмена</Button>
+          <Button onClick={close} variant="default">Cancel</Button>
      )
 }

@@ -33,9 +33,9 @@ export const UpdateUserModal: React.FC<Props> = ({ id, login, role, opened, clos
                role,
           },
           validate: {
-               login: (value) => (value.length < 5 ? "Минимальная длина логина 5 символов!" : null),
-               newPassword: (value) => (value && value.length < 6 ? "Минимальная длина пароля 6 символов!" : null),
-               oldPassword: (value) => (value && value.length < 6 ? "Минимальная длина пароля 6 символов!" : null),
+               login: (value) => (value.length < 5 ? "Minimum login length is 5 characters!" : null),
+               newPassword: (value) => (value && value.length < 6 ? "Minimum password length is 6 characters!" : null),
+               oldPassword: (value) => (value && value.length < 6 ? "Minimum password length is 6 characters!" : null),
           },
      });
 
@@ -58,7 +58,7 @@ export const UpdateUserModal: React.FC<Props> = ({ id, login, role, opened, clos
      const updateUser = async (data: SubmitData) => {
           try {
                await updateUserMutation({ id, data }).unwrap();
-               succeed("Пользователь обновлён!");
+               succeed("User updated!");
                await triggerAllUsersQuery().unwrap();
                close();
           } catch (err) {
@@ -71,30 +71,30 @@ export const UpdateUserModal: React.FC<Props> = ({ id, login, role, opened, clos
           <Modal
                opened={opened}
                onClose={close}
-               title="Обновление информации о пользователе"
+               title="Updating user information"
           >
                <form onSubmit={form.onSubmit(updateUser)}>
                     <TextInput
-                         label="Логин"
-                         placeholder="Введите логин"
+                         label="Login"
+                         placeholder="Enter login"
                          key={form.key("login")}
                          {...form.getInputProps("login")}
                     />
                     <PasswordInput
-                         label="Текущий пароль"
-                         placeholder="Введите текущий пароль"
+                         label="Current password"
+                         placeholder="Enter the current password"
                          key={form.key("oldPassword")}
                          {...form.getInputProps("oldPassword")}
                     />
                     <PasswordInput
-                         label="Новый пароль"
-                         placeholder="Введите новый пароль"
+                         label="New password"
+                         placeholder="Enter a new password"
                          key={form.key("newPassword")}
                          {...form.getInputProps("newPassword")}
                     />
                     <Select
-                         label="Роль"
-                         placeholder="Выберите роль пользователя"
+                         label="Role"
+                         placeholder="Select the user role"
                          key={form.key("role")}
                          {...form.getInputProps("role")}
                          data={roles}

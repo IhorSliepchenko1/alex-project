@@ -23,7 +23,7 @@ export const useCheckValidToken = () => {
                     iat: 0,
                     id: 0,
                     login: "",
-                    role: ROLES.VIEWER,
+                    role: ROLES.USER,
                }
           }
      }, [token])

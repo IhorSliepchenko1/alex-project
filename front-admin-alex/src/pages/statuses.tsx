@@ -1,7 +1,7 @@
 import { Divider } from "@mantine/core"
 import { useGetAllStatusesQuery } from "../app/services/statusesApi"
-import { ItemComponent } from "../app/components/features/item/item-component"
 import { AddStatuses } from "../app/components/form/add-statuses"
+import { StatusComponent } from "../app/components/features/status/status-component"
 
 export const Statuses = () => {
   const { data, isLoading } = useGetAllStatusesQuery()
@@ -10,8 +10,8 @@ export const Statuses = () => {
     <>
       <AddStatuses />
       <Divider my="sm" />
-      <ItemComponent
-        text="Список статусов"
+      <StatusComponent
+        text="Status list"
         data={data}
         isLoading={isLoading}
       />

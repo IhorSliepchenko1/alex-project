@@ -14,7 +14,7 @@ export const DeleteModals: React.FC<Props> = ({ opened, close, title, onClick, t
           typeModal === "delete" && <Modal opened={opened} onClose={close} title={title}>
                <div className="flex justify-between mt-5">
                     <ButtonCancel close={close} />
-                    <Button onClick={onClick} color="red">Удалить</Button>
+                    <Button onClick={onClick} color="red">Delete</Button>
                </div>
           </Modal>
      )

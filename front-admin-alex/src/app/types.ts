@@ -126,7 +126,6 @@ export type Children = { children: React.ReactNode }
 export enum ROLES {
      ADMIN = "ADMIN",
      USER = "USER",
-     VIEWER = "VIEWER"
 }
 
 export type ExampleRaport = {

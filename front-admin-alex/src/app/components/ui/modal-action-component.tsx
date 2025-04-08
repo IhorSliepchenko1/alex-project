@@ -8,7 +8,7 @@ type Props = {
      disabled?: boolean
 }
 
-export const ModalActionComponent: React.FC<Props> = ({ close, loading, text = "Подтвердить", disabled = false }) => {
+export const ModalActionComponent: React.FC<Props> = ({ close, loading, text = "Confirm", disabled = false }) => {
      return (
           <div className="flex justify-between mt-5">
                <ButtonCancel close={close} />

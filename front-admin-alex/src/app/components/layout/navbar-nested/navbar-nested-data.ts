@@ -7,13 +7,13 @@ export const data = (logoutSession: () => void) => {
 
      return [
           {
-               label: "Пользователи",
+               label: "Users",
                icon: FaUsers,
                link: "/",
                access: [ROLES.ADMIN]
           },
           {
-               label: "Статусы",
+               label: "Statuses",
                icon: CiBoxList,
                link: "/statuses",
                access: [ROLES.ADMIN]

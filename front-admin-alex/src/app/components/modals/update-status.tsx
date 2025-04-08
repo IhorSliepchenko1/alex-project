@@ -21,8 +21,8 @@ export const UpdateStatus: React.FC<Props> = ({ id, opened, close, name, typeMod
 
      const form = useForm<SubmitData>({
           validate: {
-               name: (value) => (!value ? "Обязательное поле!" : null),
-               color: (value) => (!value ? "Обязательное поле!" : null),
+               name: (value) => (!value ? "Mandatory field!" : null),
+               color: (value) => (!value ? "Mandatory field!" : null),
           },
           mode: "uncontrolled",
           initialValues: { name, color }
@@ -48,7 +48,7 @@ export const UpdateStatus: React.FC<Props> = ({ id, opened, close, name, typeMod
                }
 
                await updateStatus({ data, id }).unwrap();
-               succeed(`Тип базы '${name}' обновлён!`)
+               succeed(`The status of '${name}' has been updated!`)
                form.reset();
                await triggerAllStatusesQuery().unwrap();
                close()
@@ -59,17 +59,17 @@ export const UpdateStatus: React.FC<Props> = ({ id, opened, close, name, typeMod
      }
 
      return (
-          typeModal === "update" && <Modal opened={opened} onClose={close} title="Обновление информации названия свойства">
+          typeModal === "update" && <Modal opened={opened} onClose={close} title="Updating the property name information">
                <form onSubmit={form.onSubmit(updateItem)}>
                     <TextInput
-                         label="Тип базы"
+                         label="Status"
                          key={form.key("name")}
                          {...form.getInputProps("name")}
                     />
 
                     <ColorInput
-                         label={"Цвет для данного типа базы"}
-                         placeholder={"Выберите цвет для данного типа"}
+                         label={"Color for this status"}
+                         placeholder={"Choose a color for the status"}
                          key={form.key("color")}
                          {...form.getInputProps("color")}
                     />

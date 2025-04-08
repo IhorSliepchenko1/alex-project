@@ -10,7 +10,7 @@ export const useNotification = () => {
      const notificationMessage = ({ type, message }: NotificationMessage) =>
           notifications.show({
                color: type === "error" ? "red" : "green",
-               title: type === "error" ? "Ошибка!" : "Успешно!",
+               title: type === "error" ? "Error!" : "Succeed!",
                message: message,
                position: "top-right",
                classNames: style

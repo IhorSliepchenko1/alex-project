@@ -26,14 +26,14 @@ export const User: React.FC<Props> = ({ role, login, id }) => {
 
      const deleteUser = async () => {
           if (decoded.id === id) {
-               error("Свою учетную запись удалить нельзя!")
+               error("You can't delete your account!")
                close()
                return
           }
 
           try {
                await deeleteUserMutation(id).unwrap()
-               succeed(`Пользователь '${login}' удалён!`)
+               succeed(`User '${login}' has been deleted!`)
                await triggerAllUsersQuery().unwrap()
 
           } catch (err) {
@@ -47,8 +47,6 @@ export const User: React.FC<Props> = ({ role, login, id }) => {
                     return "green"
                case "USER":
                     return "orange"
-               case "VIEWER":
-                    return "yellow"
                default: return
           }
      }
@@ -56,10 +54,10 @@ export const User: React.FC<Props> = ({ role, login, id }) => {
      return (
           <Group justify="space-between">
                <div className="flex items-center gap-3">
-                    <Badge className="min-w-[100px]" color={colorRole(role)}>роль: {role} </Badge>
+                    <Badge className="min-w-[100px]" color={colorRole(role)}>role: {role} </Badge>
                     <p>
                          {login}
-                         <span className="text-red-600">{decoded.id === id && " (ВЫ)"}</span>
+                         <span className="text-red-600">{decoded.id === id && " (YOU)"}</span>
                     </p>
                </div>
                {
@@ -74,7 +72,7 @@ export const User: React.FC<Props> = ({ role, login, id }) => {
                          <DeleteModals
                               opened={opened}
                               close={close}
-                              title={`Подтвердите удаление аккаунта '${login}'`}
+                              title={`Confirm deletion of account '${login}'`}
                               onClick={deleteUser}
                               typeModal={typeModal} />
 

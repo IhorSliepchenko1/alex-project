@@ -15,8 +15,8 @@ export const AddStatuses = () => {
           mode: "uncontrolled",
           initialValues: { name: "", color: "" },
           validate: {
-               name: (value) => (!value ? "Обязательное поле!" : null),
-               color: (value) => (!value ? "Обязательное поле!" : null),
+               name: (value) => (!value ? "Mandatory field" : null),
+               color: (value) => (!value ? "Mandatory field" : null),
           },
      });
 
@@ -28,7 +28,7 @@ export const AddStatuses = () => {
      const onSubmit = async (data: Data) => {
           try {
                await addStatus(data).unwrap();
-               succeed(`Новый тип базы добавлен!`);
+               succeed("New status added!");
                form.reset();
                await triggerAllStatusesQuery().unwrap();
 
@@ -41,18 +41,18 @@ export const AddStatuses = () => {
           decoded.role === ROLES.ADMIN &&
           <form onSubmit={form.onSubmit(onSubmit)} className="flex flex-col gap-2">
                <TextInput
-                    label="Тип базы"
-                    placeholder={"Введите название"}
+                    label="Status"
+                    placeholder={"Enter a name status"}
                     key={form.key("name")}
                     {...form.getInputProps("name")}
                />
                <ColorInput
-                    label={"Цвет типа базы"}
-                    placeholder={"Выберите цвет для базы"}
+                    label={"Color status"}
+                    placeholder={"Select a status color"}
                     key={form.key("color")}
                     {...form.getInputProps("color")}
                />
-               <ButtonSubmit loading={isLoading} text={"Добавить"} />
+               <ButtonSubmit loading={isLoading} text={"Add"} />
           </form>
      )
 }
