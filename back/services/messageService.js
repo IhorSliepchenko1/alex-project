@@ -17,9 +17,10 @@ class MessageService {
     return { message: "The message has been sent." };
   }
 
-  async update(id, status_id) {
+  async update(id, name) {
     const findMessage = await Message.findOne({ where: { id } });
-    const findStatus = await Statuses.findOne({ where: { id: status_id } });
+
+    const findStatus = await Statuses.findOne({ where: { name } });
 
     if (!findMessage) {
       throw ApiError.badRequest("Message not found!");
@@ -29,16 +30,42 @@ class MessageService {
       throw ApiError.badRequest("Status not found!");
     }
 
-    await Message.update({ status_id }, { where: { id } });
+    await Message.update({ status_id: findStatus.id }, { where: { id } });
 
     return { message: "Status has been successfully updated!" };
   }
 
   async getAll() {
     const data = await Message.findAndCountAll({
-      order: [["name", "ASC"]],
+      order: [["createdAt", "DESC"]],
+      include: {
+        model: Statuses,
+        as: "status",
+        attributes: ["name", "color"],
+      },
+      raw: true,
     });
-    return data;
+
+    const modifiedRows = data.rows.map((message) => {
+      if (!message.status_id) {
+        message.status = "new message";
+        message.color = "orange";
+        delete message["status.name"];
+        delete message["status.color"];
+      } else {
+        message.status = message["status.name"];
+        message.color = message["status.color"];
+        delete message["status.name"];
+        delete message["status.color"];
+      }
+
+      return message;
+    });
+
+    return {
+      count: data.count,
+      rows: modifiedRows,
+    };
   }
 
   async getById(id) {
@@ -50,15 +77,6 @@ class MessageService {
 
     return result;
   }
-  // async delete(id) {
-  //   const findStatus = await Statuses.findOne({ where: { id } });
-
-  //   if (!findStatus) {
-  //     throw ApiError.notFound("Статус не найден!");
-  //   }
-  //   await Statuses.destroy({ where: { id } });
-  //   return { message: "Статус успешно удален!" };
-  // }
 }
 
 export const messageService = new MessageService();

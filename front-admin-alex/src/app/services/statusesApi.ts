@@ -1,9 +1,6 @@
-import { TItem } from "../types";
+import { Status } from "../types";
 import { api } from "./api"
 
-type TypeNumber = TItem & {
-     color: string
-}
 
 type Data = {
      data: {
@@ -17,7 +14,7 @@ type Data = {
 
 export const statusesApi = api.injectEndpoints({
      endpoints: (builder) => ({
-          addStatus: builder.mutation<TypeNumber, {
+          addStatus: builder.mutation<Status, {
                name: string;
                color: string
           }>({
@@ -27,20 +24,20 @@ export const statusesApi = api.injectEndpoints({
                     body: data,
                }),
           }),
-          updateStatus: builder.mutation<TypeNumber, Data>({
+          updateStatus: builder.mutation<Status, Data>({
                query: ({ data, id }) => ({
                     url: `status/${id}`,
                     method: "PUT",
                     body: data,
                }),
           }),
-          getAllStatuses: builder.query<{ rows: TypeNumber[] }, void>({
+          getAllStatuses: builder.query<{ rows: Status[] }, void>({
                query: () => ({
                     url: "status",
                     method: "GET",
                }),
           }),
-          getByIdStatus: builder.query<TypeNumber, number>({
+          getByIdStatus: builder.query<Status, number>({
                query: (id) => ({
                     url: `status/${id}`,
                     method: "GET",

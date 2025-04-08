@@ -15,7 +15,7 @@ export const AddStatuses = () => {
           mode: "uncontrolled",
           initialValues: { name: "", color: "" },
           validate: {
-               name: (value) => (!value ? "Mandatory field" : null),
+               name: (value) => (!value ? "Mandatory field" : (value === "new message" ? "new message - base name for new data!" : null)),
                color: (value) => (!value ? "Mandatory field" : null),
           },
      });

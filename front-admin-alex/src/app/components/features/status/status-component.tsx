@@ -1,9 +1,9 @@
-import { TItem } from "../../../types"
+import { Status as TStatus } from "../../../types"
 import { Status } from "../status/status"
 import { LoaderComponent } from "../../layout/loader"
 import { ScrolContainer } from "../../layout/scrol-container"
 
-type Data = TItem & {
+type Data = TStatus & {
      color?: string
 }
 

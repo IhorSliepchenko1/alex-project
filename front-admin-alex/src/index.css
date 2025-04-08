@@ -18,7 +18,6 @@ table,
 td {
      text-align: center !important;
 
-
      @media screen and (max-width: 1500px) {
           font-size: 10px !important;
      }

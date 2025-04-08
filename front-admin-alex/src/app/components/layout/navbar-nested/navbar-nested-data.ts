@@ -2,6 +2,7 @@ import { CiLogout } from "react-icons/ci";
 import { ROLES } from "../../../../utils/role-list";
 import { FaUsers } from "react-icons/fa6";
 import { CiBoxList } from "react-icons/ci";
+import { MdMessage } from "react-icons/md";
 
 export const data = (logoutSession: () => void) => {
 
@@ -18,7 +19,13 @@ export const data = (logoutSession: () => void) => {
                link: "/statuses",
                access: [ROLES.ADMIN]
           },
-      
+          {
+               label: "Messages",
+               icon: MdMessage,
+               link: "/messages",
+               access: [ROLES.ADMIN]
+          },
+
           // {
           //      label: "Добавления",
           //      icon: FiPlusSquare,
@@ -53,7 +60,7 @@ export const data = (logoutSession: () => void) => {
                link: "/",
                onClick: logoutSession,
                logout: true,
-               access: [ROLES.VIEWER, ROLES.ADMIN, ROLES.USER]
+               access: [ROLES.ADMIN, ROLES.USER]
           },
      ];
 }

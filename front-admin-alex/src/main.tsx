@@ -12,6 +12,7 @@ import { Layout } from "./app/components/layout/layout";
 import { Auth } from "./pages/auth";
 import { Users } from "./pages/users";
 import { Statuses } from "./pages/statuses";
+import { Messages } from "./pages/messages";
 
 const container = document.getElementById("root")
 const router = createBrowserRouter([
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: "/statuses",
         element: <Statuses />
+      },
+      {
+        path: "/messages",
+        element: <Messages />
       },
     ],
   },

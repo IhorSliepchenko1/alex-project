@@ -7,23 +7,23 @@ import { ROLE } from "../utils/constants.js";
 class UserService {
   async add(login, password, role) {
     if (!login || !password) {
-      throw ApiError.notFound("Логин и пароль обязательны!");
+      throw ApiError.notFound("Login and password are required!");
     }
 
     if (password.length < 6) {
-      throw ApiError.badRequest("Минимальная длина пароля 6 символов!");
+      throw ApiError.badRequest("Password must be at least 6 characters long!");
     }
 
     const candidate = await User.findOne({ where: { login } });
 
     if (candidate) {
-      throw ApiError.badRequest(`${login} уже существует`);
+      throw ApiError.badRequest(`${login} already exists`);
     }
 
     const roleList = Object.values(ROLE);
 
     if (!roleList.includes(role)) {
-      throw ApiError.badRequest("Не известная роль");
+      throw ApiError.badRequest("Unknown role");
     }
 
     const hashPassword = await bcrypt.hash(password, 12);
@@ -34,24 +34,24 @@ class UserService {
       role: role ? role : ROLE.VIEWER,
     });
 
-    return `${user.login} добавлен!`;
+    return `${user.login} has been added!`;
   }
 
   async login(login, password) {
     if (!login || !password) {
-      throw ApiError.notFound("Логин и пароль обязательны!");
+      throw ApiError.notFound("Login and password are required!");
     }
 
     const user = await User.findOne({ where: { login } });
 
     if (!user) {
-      throw ApiError.badRequest(`Пользователь ${login} не найден`);
+      throw ApiError.badRequest(`User ${login} not found`);
     }
 
     const comparePassword = await bcrypt.compare(password, user.password);
 
     if (!comparePassword) {
-      throw ApiError.unauthorized("Указан неверный логин или пароль");
+      throw ApiError.unauthorized("Incorrect login or password");
     }
 
     const token = generateJwt(user.id, user.login, user.role);
@@ -73,7 +73,7 @@ class UserService {
     const user = await User.findOne({ where: { id } });
 
     if (!user) {
-      throw ApiError.badRequest(`${id} не найден`);
+      throw ApiError.badRequest(`${id} not found`);
     }
 
     if (newPassword && oldPassword) {
@@ -83,16 +83,18 @@ class UserService {
         isMatch = bcrypt.compareSync(oldPassword, user.password);
 
         if (!isMatch) {
-          throw ApiError.badRequest("Старый пароль не совпадает");
+          throw ApiError.badRequest("Old password does not match");
         }
       }
 
       if (newPassword && newPassword.length < 6) {
-        throw ApiError.badRequest("Минимальная длина пароля 6 символов!");
+        throw ApiError.badRequest(
+          "Password must be at least 6 characters long!"
+        );
       }
 
       if (newPassword === oldPassword) {
-        throw ApiError.badRequest("Новый пароль должен отличаться!");
+        throw ApiError.badRequest("New password must be different!");
       }
     }
 
@@ -116,12 +118,12 @@ class UserService {
     const user = await User.findOne({ where: { id } });
 
     if (!user) {
-      throw ApiError.notFound("Пользователь не обнаружен!");
+      throw ApiError.notFound("User not found!");
     }
 
     await User.destroy({ where: { id: user.id } });
 
-    return { message: `${user.login} удалён` };
+    return { message: `${user.login} has been deleted` };
   }
 
   async check(user) {

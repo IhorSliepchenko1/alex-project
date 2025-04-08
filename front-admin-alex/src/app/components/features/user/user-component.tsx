@@ -9,7 +9,7 @@ export const UserComponent = () => {
 
      return (
           <ScrolContainer>
-               <p className="text-center text-xl sticky top-0">Список пользователей</p>
+               <p className="text-center text-xl sticky top-0">User list</p>
                {isLoading
                     ? <LoaderComponent  />
                     : data?.map((item) => (

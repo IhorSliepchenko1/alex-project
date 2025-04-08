@@ -11,8 +11,8 @@ class MessageController {
 
   update = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { status_id } = req.body;
-    const message = await messageService.update(id, status_id);
+    const { name } = req.body;
+    const message = await messageService.update(id, name);
     return res.status(HTTP_STATUSES.OK).json(message);
   });
 
