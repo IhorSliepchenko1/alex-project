@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useSendMessage } from "@/hooks/useSendMessage";
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -18,11 +19,27 @@ const ContactForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+
+  const { createMessage } = useSendMessage()
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const usPhoneRegex = /^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/;
+    if (!usPhoneRegex.test(formData.phone)) {
+      toast({
+        title: "Invalid phone number",
+        description: "Please enter a valid US phone number (e.g., 123-456-7890)",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
-    
-    // Simulate form submission
+
+    const resp = await createMessage(formData);
+    console.log(resp);
+
     setTimeout(() => {
       setIsSubmitting(false);
       setFormData({
@@ -35,8 +52,12 @@ const ContactForm = () => {
         title: "Message sent successfully",
         description: "We'll get back to you as soon as possible.",
       });
-    }, 1500);
+    }, 1000);
   };
+
+
+
+
 
   return (
     <section className="py-24 bg-white">
@@ -49,7 +70,7 @@ const ContactForm = () => {
               </span>
               <h2 className="mb-6">Contact Us</h2>
               <p className="text-gray-600 mb-8">
-                Have questions about our services or ready to start your next project? 
+                Have questions about our services or ready to start your next project?
                 Reach out to us for a consultation or to discuss your renovation needs.
               </p>
 
@@ -110,7 +131,7 @@ const ContactForm = () => {
             <div className="reveal" style={{ transitionDelay: "100ms" }}>
               <form onSubmit={handleSubmit} className="bg-gray-50 rounded-2xl p-8 border border-gray-100 shadow-subtle">
                 <h3 className="text-xl font-semibold mb-6">Send Us a Message</h3>
-                
+
                 <div className="space-y-4 mb-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -127,7 +148,7 @@ const ContactForm = () => {
                       placeholder="Your name"
                     />
                   </div>
-                  
+
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                       Email
@@ -143,7 +164,7 @@ const ContactForm = () => {
                       placeholder="Your email"
                     />
                   </div>
-                  
+
                   <div>
                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                       Phone
@@ -154,11 +175,15 @@ const ContactForm = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
+                      required
+                      pattern="^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$"
+                      title="Enter a valid US phone number (e.g., 123-456-7890)"
                       className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all"
-                      placeholder="Your phone number"
+                      placeholder="123-456-7890"
                     />
+
                   </div>
-                  
+
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
                       Message
@@ -175,10 +200,10 @@ const ContactForm = () => {
                     ></textarea>
                   </div>
                 </div>
-                
-                <Button 
-                  type="submit" 
-                  className="w-full py-6 rounded-lg flex items-center justify-center" 
+
+                <Button
+                  type="submit"
+                  className="w-full py-6 rounded-lg flex items-center justify-center"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
