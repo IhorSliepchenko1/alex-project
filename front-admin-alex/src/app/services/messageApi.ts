@@ -1,6 +1,11 @@
 import { Message } from "../types";
 import { api } from "./api"
 
+type PageLimit = {
+     limit: number;
+     page: number;
+}
+
 export const messageApi = api.injectEndpoints({
      endpoints: (builder) => ({
           addMessage: builder.mutation<{ message: string }, Message>({
@@ -17,10 +22,11 @@ export const messageApi = api.injectEndpoints({
                     body: { name },
                }),
           }),
-          getAllMessagees: builder.query<{ rows: Message[], count: number }, void>({
-               query: () => ({
+          getAllMessagees: builder.query<{ rows: Message[], count: number }, PageLimit>({
+               query: ({ limit, page }) => ({
                     url: "message",
                     method: "GET",
+                    params: { limit, page }
                }),
           }),
           getByIdMessage: builder.query<Message, number>({

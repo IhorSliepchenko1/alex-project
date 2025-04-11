@@ -8,21 +8,21 @@ export const data = (logoutSession: () => void) => {
 
      return [
           {
+               label: "Messages",
+               icon: MdMessage,
+               link: "/",
+               access: [ROLES.ADMIN]
+          },
+          {
                label: "Users",
                icon: FaUsers,
-               link: "/",
+               link: "/users",
                access: [ROLES.ADMIN]
           },
           {
                label: "Statuses",
                icon: CiBoxList,
                link: "/statuses",
-               access: [ROLES.ADMIN]
-          },
-          {
-               label: "Messages",
-               icon: MdMessage,
-               link: "/messages",
                access: [ROLES.ADMIN]
           },
 

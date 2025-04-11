@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "run:all": "concurrently \"nodemon index.js\" \"cd ../front-admin-alex && npm run dev\""
+    "all": "concurrently \"nodemon index.js\" \"cd ../front-admin-alex && npm run dev\" \"cd ../front-site-alex && npm run dev\""
   },
   "type": "module",
   "author": "",

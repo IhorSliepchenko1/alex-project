@@ -1,4 +1,4 @@
-import { Group, Select, Table } from '@mantine/core'
+import { Select, Table } from '@mantine/core'
 import { useEffect, useMemo, useState } from 'react';
 import { useGetAllMessageesQuery, useUpdateMessageMutation } from '../app/services/messageApi';
 import { useGetAllStatusesQuery } from '../app/services/statusesApi';
@@ -6,11 +6,15 @@ import { useNotification } from '../app/hooks/useNotification/useNotification';
 import { useCalendarInputDate } from '../app/hooks/useCalendarInputDate';
 import { errorMessages } from '../utils/has-error-field';
 import { LoaderComponent } from '../app/components/layout/loader';
-
+import { useTotalPage } from '../app/hooks/useTotalPage';
+import { Pagination } from '../app/components/ui/pagination';
 
 export const Messages = () => {
-     const { data, refetch, isLoading } = useGetAllMessageesQuery()
+     const [page, setPage] = useState(1);
+     const limit = 9;
+     const { data, refetch, isLoading } = useGetAllMessageesQuery({ limit, page })
      const { data: statusData, isLoading: statusLoading } = useGetAllStatusesQuery()
+     const total = useTotalPage(data?.count, limit)
 
      const selectStatusValue = useMemo(() => {
           if (statusData) {
@@ -79,7 +83,7 @@ export const Messages = () => {
                     isLoading && statusLoading
                          ? <LoaderComponent />
                          :
-                         <Group justify="space-between">
+                         <div className="flex flex-col justify-between items-center min-h-[90vh] w-full">
 
                               <Table>
                                    <Table.Thead>
@@ -97,7 +101,8 @@ export const Messages = () => {
                                    </Table.Tbody>
 
                               </Table>
-                         </Group >}
+                              <Pagination total={total} setPage={setPage} />
+                         </div >}
           </>
      )
 }

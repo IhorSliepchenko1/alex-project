@@ -1,30 +1,56 @@
 import asyncHandler from "express-async-handler";
-import { messageService } from "../services/messageService.js";
+import { consultationService } from "../services/consultationService.js";
 import { HTTP_STATUSES } from "../utils/constants.js";
 
-class MessageController {
+class ConsultationController {
   add = asyncHandler(async (req, res) => {
-    const { name, email, phone, message } = req.body;
-    const info = await messageService.add(name, email, phone, message);
+    const {
+      full_name,
+      email,
+      phone,
+      street,
+      state,
+      zip,
+      descriptions,
+      service_type,
+      date,
+      time,
+    } = req.body;
+
+    const uploaded = req.files.file_uploader;
+
+    const info = await consultationService.add(
+      full_name,
+      email,
+      phone,
+      street,
+      state,
+      zip,
+      descriptions,
+      service_type,
+      date,
+      time,
+      uploaded
+    );
     return res.status(HTTP_STATUSES.CREATED).json(info);
   });
 
   update = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { name } = req.body;
-    const message = await messageService.update(id, name);
+    const message = await consultationService.update(id, name);
     return res.status(HTTP_STATUSES.OK).json(message);
   });
 
   getAll = asyncHandler(async (req, res) => {
     const { limit, page } = req.query;
-    const data = await messageService.getAll(limit, page);
+    const data = await consultationService.getAll(limit, page);
     return res.status(HTTP_STATUSES.OK).json(data);
   });
 
   getById = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const message = await messageService.getById(id);
+    const message = await consultationService.getById(id);
     return res.status(HTTP_STATUSES.OK).json(message);
   });
 
@@ -35,4 +61,4 @@ class MessageController {
   // });
 }
 
-export const messageController = new MessageController();
+export const consultationController = new ConsultationController();

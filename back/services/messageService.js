@@ -35,8 +35,15 @@ class MessageService {
     return { message: "Status has been successfully updated!" };
   }
 
-  async getAll() {
+  async getAll(limit, page) {
+    page = page || 1;
+    limit = limit || 20;
+    let offset = page * limit - limit;
+
     const data = await Message.findAndCountAll({
+      page,
+      limit,
+      offset,
       order: [["createdAt", "DESC"]],
       include: {
         model: Statuses,
