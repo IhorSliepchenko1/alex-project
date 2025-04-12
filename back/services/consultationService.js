@@ -40,14 +40,21 @@ class ConsultationService {
       throw ApiError.badRequest("Service type not found!");
     }
 
-    const { limits, id } = await SelectDateTime.findOne({
+    const { limits, id, booked } = await SelectDateTime.findOne({
       where: { date, time },
       raw: true,
     });
 
-    if (limits + 1 > limits) {
+    if (booked > limits) {
       throw ApiError.badRequest("Limit is full!");
     }
+
+    await SelectDateTime.update(
+      {
+        booked: booked + 1,
+      },
+      { where: { id } }
+    );
 
     const filePath = path.join(
       path.dirname(fileURLToPath(import.meta.url)),

@@ -40,8 +40,15 @@ class SelectDateTimeService {
     return { message: "SelectDateTime updated successfully!" };
   }
 
-  async getAll() {
+  async getAll(limit, page) {
+    page = page || 1;
+    limit = limit || 20;
+    let offset = page * limit - limit;
+
     const data = await SelectDateTime.findAndCountAll({
+      page,
+      limit,
+      offset,
       order: [["createdAt", "DESC"]],
     });
     return data;
@@ -55,6 +62,16 @@ class SelectDateTimeService {
     }
 
     return result;
+  }
+
+  async getByDate(date) {
+    const data = await SelectDateTime.findAll({ where: { date } });
+
+    if (!data) {
+      throw ApiError.notFound("SelectDateTime not found!");
+    }
+
+    return data;
   }
 
   async delete(id) {

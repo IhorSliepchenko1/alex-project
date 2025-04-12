@@ -27,6 +27,7 @@ export const SelectDateTime = sequelize.define("select_date_time", {
   date: { type: DataTypes.STRING, allowNull: false },
   time: { type: DataTypes.STRING, allowNull: false },
   limits: { type: DataTypes.INTEGER, allowNull: false },
+  booked: { type: DataTypes.INTEGER },
 });
 
 export const ServiceType = sequelize.define("service_type", {

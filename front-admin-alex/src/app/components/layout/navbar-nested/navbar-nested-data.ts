@@ -8,15 +8,15 @@ export const data = (logoutSession: () => void) => {
 
      return [
           {
-               label: "Messages",
-               icon: MdMessage,
+               label: "Users",
+               icon: FaUsers,
                link: "/",
                access: [ROLES.ADMIN]
           },
           {
-               label: "Users",
-               icon: FaUsers,
-               link: "/users",
+               label: "Messages",
+               icon: MdMessage,
+               link: "/messages",
                access: [ROLES.ADMIN]
           },
           {
@@ -55,9 +55,9 @@ export const data = (logoutSession: () => void) => {
           // },
 
           {
-               label: "Выйти",
+               label: "Exit",
                icon: CiLogout,
-               link: "/",
+               link: "/auth",
                onClick: logoutSession,
                logout: true,
                access: [ROLES.ADMIN, ROLES.USER]

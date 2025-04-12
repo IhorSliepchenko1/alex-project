@@ -26,11 +26,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Messages />
+        element: <Users />
       },
       {
-        path: "/users",
-        element: <Users />
+        path: "/messages",
+        element: <Messages />
       },
       {
         path: "/statuses",
