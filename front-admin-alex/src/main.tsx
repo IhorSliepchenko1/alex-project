@@ -1,6 +1,7 @@
 import "./index.css"
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
+import '@mantine/carousel/styles.css';
 import { createRoot } from "react-dom/client"
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
@@ -13,6 +14,8 @@ import { Auth } from "./pages/auth";
 import { Users } from "./pages/users";
 import { Statuses } from "./pages/statuses";
 import { Messages } from "./pages/messages";
+import { Consultation } from "./pages/consultation";
+import { ServiceType } from "./pages/service-type";
 
 const container = document.getElementById("root")
 const router = createBrowserRouter([
@@ -33,8 +36,16 @@ const router = createBrowserRouter([
         element: <Messages />
       },
       {
+        path: "/consultation",
+        element: <Consultation />
+      },
+      {
         path: "/statuses",
         element: <Statuses />
+      },
+      {
+        path: "/service-type",
+        element: <ServiceType />
       },
 
     ],

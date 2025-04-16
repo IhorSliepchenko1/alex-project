@@ -53,3 +53,20 @@ export type Message = {
      color: string
      createdAt: string
 }
+
+export type Consultation = {
+     id: number
+     full_name: string,
+     email: string,
+     phone: string,
+     street: string
+     state: string
+     zip: string
+     descriptions: string,
+     status: string,
+     color: string,
+     createdAt: string
+     "select_date_time.date": string
+     "select_date_time.time": string
+     "service_type.name": string
+}

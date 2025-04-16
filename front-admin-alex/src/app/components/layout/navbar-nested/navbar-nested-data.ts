@@ -3,6 +3,7 @@ import { ROLES } from "../../../../utils/role-list";
 import { FaUsers } from "react-icons/fa6";
 import { CiBoxList } from "react-icons/ci";
 import { MdMessage } from "react-icons/md";
+import { BiSolidMessageAltDetail } from "react-icons/bi";
 
 export const data = (logoutSession: () => void) => {
 
@@ -20,9 +21,21 @@ export const data = (logoutSession: () => void) => {
                access: [ROLES.ADMIN]
           },
           {
+               label: "Consultation",
+               icon: BiSolidMessageAltDetail,
+               link: "/consultation",
+               access: [ROLES.ADMIN]
+          },
+          {
                label: "Statuses",
                icon: CiBoxList,
                link: "/statuses",
+               access: [ROLES.ADMIN]
+          },
+          {
+               label: "Service type",
+               icon: CiBoxList,
+               link: "/service-type",
                access: [ROLES.ADMIN]
           },
 
