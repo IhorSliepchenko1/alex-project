@@ -28,12 +28,13 @@ const accessLogStream = fs.createWriteStream(
   { flags: "a" }
 );
 
-app.use(cors());
 app.use(express.json());
 app.use(morgan("combined", { stream: accessLogStream }));
-app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 app.use(express.static(staticDir));
+
 app.use(fileUpload());
 app.use("/api", router);
 app.use(errorMiddlware(logger));

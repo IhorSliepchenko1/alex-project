@@ -79,11 +79,7 @@ Consultation.belongsTo(ServiceType, {
   foreignKey: "service_type_id",
 });
 
-SelectDateTime.hasMany(Consultation, {
-  as: "select",
-  foreignKey: "slect_date_time_id",
-});
-SelectDateTime.belongsTo(ServiceType, {
-  as: "slect_date_time",
-  foreignKey: "slect_date_time_id",
+Consultation.belongsTo(SelectDateTime, {
+  as: "select_date_time", // Псевдоним для связи
+  foreignKey: "slect_date_time_id", // Внешний ключ
 });

@@ -17,7 +17,7 @@ class ConsultationController {
       time,
     } = req.body;
 
-    const uploaded = req.files.file_uploader;
+    const uploaded = req.files.uploaded;
 
     const info = await consultationService.add(
       full_name,

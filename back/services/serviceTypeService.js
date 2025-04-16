@@ -59,9 +59,9 @@ class ServiceTypeService {
     const findServiceType = await ServiceType.findOne({ where: { id } });
 
     if (!findServiceType) {
-      throw ApiError.notFound("Status not found!");
+      throw ApiError.notFound("ServiceType is not defined!");
     }
-    await Statuses.destroy({ where: { id } });
+    await ServiceType.destroy({ where: { id } });
     return { message: "ServiceType deleted successfully!" };
   }
 }
