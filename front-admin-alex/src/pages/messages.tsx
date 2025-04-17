@@ -55,7 +55,7 @@ export const Messages = () => {
      }, [value]);
 
      const rows = useMemo(() => {
-          if (data) {
+          if (data && statusData) {
                return data?.rows.map((element, index) => (
                     <Table.Tr key={index} onClick={() => setId(element.id)}>
                          <Table.Td>{formatDate(element.createdAt)}</Table.Td>

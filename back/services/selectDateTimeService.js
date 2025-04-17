@@ -3,7 +3,7 @@ import { SelectDateTime, Consultation } from "../models/models.js";
 import { Op } from "sequelize";
 
 class SelectDateTimeService {
-  async add(date, time, limits) {
+  async add(date, time, limits, period) {
     if (!date || !time || !limits) {
       throw ApiError.badRequest("Please fill in all fields!");
     }
@@ -16,24 +16,23 @@ class SelectDateTimeService {
       throw ApiError.badRequest("SelectDateTime already exists!");
     }
 
-    await SelectDateTime.create({ date, time, limits });
+    await SelectDateTime.create({ date, time, limits, period });
     return { message: "Create successfully!" };
   }
 
-  async update(id, date, time, limits) {
+  async update(id, date, time, limits, period) {
     const find = await SelectDateTime.findOne({ where: { id } });
 
     if (!find) {
       throw ApiError.badRequest("SelectDateTime not found!");
     }
 
-    // Опционально: проверка на конфликт другой записи с тем же date + time
     if (date && time) {
       const duplicate = await SelectDateTime.findOne({
         where: {
           date,
           time,
-          id: { [Op.ne]: id }, // не учитывать саму себя
+          id: { [Op.ne]: id },
         },
       });
 
@@ -49,6 +48,7 @@ class SelectDateTimeService {
         date: date ?? find.date,
         time: time ?? find.time,
         limits: limits ?? find.limits,
+        period: period ?? find.period,
       },
       { where: { id } }
     );
@@ -60,7 +60,6 @@ class SelectDateTimeService {
     const data = await SelectDateTime.findAndCountAll({
       order: [["createdAt", "DESC"]],
     });
-    console.log(data);
     return data;
   }
 

@@ -4,6 +4,7 @@ type PropsPost = {
      id: number,
      date: string,
      time: string,
+     period: string,
      limits: number,
      booked: number,
      createdAt: Date,
@@ -15,6 +16,7 @@ export const selectDateTimeApi = api.injectEndpoints({
           addSelectDateTime: builder.mutation<{ message: string }, {
                date: string,
                time: string,
+               period: string,
                limits: number,
           }>({
                query: (data) => ({
@@ -27,6 +29,7 @@ export const selectDateTimeApi = api.injectEndpoints({
                data: {
                     date: string,
                     time: string,
+                    period: string,
                     limits: number,
                }
                id: number;
@@ -44,7 +47,12 @@ export const selectDateTimeApi = api.injectEndpoints({
                     method: "GET",
                }),
           }),
-
+          deleteSelectDateTime: builder.mutation<void, number>({
+               query: (id) => ({
+                    url: `select-date-time/${id}`,
+                    method: "DELETE",
+               }),
+          }),
 
      }),
 })
@@ -53,5 +61,6 @@ export const {
      useAddSelectDateTimeMutation,
      useGetAllSelectDateTimeQuery,
      useLazyGetAllSelectDateTimeQuery,
-     useUpdateSelectDateTimeMutation
+     useUpdateSelectDateTimeMutation,
+     useDeleteSelectDateTimeMutation
 } = selectDateTimeApi

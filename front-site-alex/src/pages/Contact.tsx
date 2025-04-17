@@ -33,12 +33,13 @@ const Contact = () => {
     };
   }, []);
 
+
   return (
     <div className="min-h-screen">
       <Navbar />
       <main className="pt-20">
         <ContactForm />
-        
+
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-6">
             <div className="max-w-3xl mx-auto text-center mb-16 reveal">
@@ -48,16 +49,16 @@ const Contact = () => {
                 view completed project displays, and meet with our design team.
               </p>
             </div>
-            
+
             <div className="reveal">
               <div className="bg-white rounded-2xl shadow-subtle overflow-hidden">
                 <div className="aspect-w-16 aspect-h-9 relative h-[400px]">
-                  <iframe 
+                  <iframe
                     title="Elegant Renovations Location"
                     className="w-full h-full"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387193.30591910506!2d-74.25987584358124!3d40.697149422113014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sca!4v1622839309319!5m2!1sen!2sca" 
-                    style={{ border: 0 }} 
-                    allowFullScreen 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387193.30591910506!2d-74.25987584358124!3d40.697149422113014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sca!4v1622839309319!5m2!1sen!2sca"
+                    style={{ border: 0 }}
+                    allowFullScreen
                     loading="lazy"
                   ></iframe>
                 </div>
@@ -74,7 +75,7 @@ const Contact = () => {
                 Find answers to common questions about our services, process, and policies.
               </p>
             </div>
-            
+
             <div className="max-w-3xl mx-auto grid gap-6 reveal">
               {[
                 {

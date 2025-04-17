@@ -6,6 +6,7 @@ type Data = {
   id: number;
   date: string,
   time: string,
+  period: string,
   limits: number,
   booked: number
   createdAt: Date;
@@ -33,6 +34,7 @@ export const SelectDateTimeComponent: React.FC<Props> = ({ isLoading, data, text
             date={item.date}
             time={item.time}
             limits={item.limits}
+            period={item.period}
             booked={item.booked}
           />))}
     </ScrolContainer>

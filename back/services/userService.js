@@ -107,7 +107,6 @@ class UserService {
     if (hashPassword) updateFields.password = hashPassword;
     if (role && user.role !== role) updateFields.role = role;
 
-    console.log(updateFields);
 
     await User.update(updateFields, { where: { id } });
 

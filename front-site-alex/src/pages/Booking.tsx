@@ -3,7 +3,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BookingCalendar from "@/components/BookingCalendar";
 import { Bath, Wrench, ArrowRight, PhoneOff, MapPin, Camera, CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const Booking = () => {
   // Handle animations on scroll
@@ -33,6 +32,7 @@ const Booking = () => {
       });
     };
   }, []);
+  
 
   return (
     <div className="min-h-screen">

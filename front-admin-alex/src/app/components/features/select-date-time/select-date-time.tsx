@@ -5,19 +5,39 @@ import { OpenModalComponent } from '../../ui/open-modal-component';
 import { useCheckValidToken } from '../../../hooks/useCheckValidToken';
 import { ROLES } from '../../../../utils/role-list';
 import { UpdateSelectDateTime } from '../../modals/update-select-date-time';
+import { DeleteModals } from '../../modals/delete-modals';
+import { errorMessages } from '../../../../utils/has-error-field';
+import { useNotification } from '../../../hooks/useNotification/useNotification';
+import { useDeleteSelectDateTimeMutation, useLazyGetAllSelectDateTimeQuery } from '../../../services/selectDateTimeServiceApi';
 
 type Props = {
   id: number
   index: number
   date: string
   time: string
+  period: string
   booked: number
   limits: number
 }
-export const SelectDateTime: React.FC<Props> = ({ date, time, booked, limits, id }) => {
+export const SelectDateTime: React.FC<Props> = ({ date, time, booked, limits, id, period }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const { typeModal, openUpdateModal, openDeleteModal } = useChangeTypeModal({ open })
   const { decoded } = useCheckValidToken()
+  const { succeed, error } = useNotification()
+
+  const [deleteSelectDateTime] = useDeleteSelectDateTimeMutation()
+  const [triggerAllSelectDateTime] = useLazyGetAllSelectDateTimeQuery()
+  const deleteItem = async () => {
+    try {
+      await deleteSelectDateTime(id).unwrap();
+      succeed("SelectDateTime removed!")
+      await triggerAllSelectDateTime().unwrap();
+      close()
+
+    } catch (err) {
+      error(errorMessages(err));
+    }
+  }
 
 
   return (
@@ -26,6 +46,7 @@ export const SelectDateTime: React.FC<Props> = ({ date, time, booked, limits, id
         <div className='flex gap-1 items-center'>
           <div>{date}</div>
           <div>{time}</div>
+          <div>{period}</div>
         </div>
         <div>{booked ? booked : 0} / {limits}</div>
       </div>
@@ -35,7 +56,6 @@ export const SelectDateTime: React.FC<Props> = ({ date, time, booked, limits, id
           <OpenModalComponent
             openUpdateModal={openUpdateModal}
             openDeleteModal={openDeleteModal}
-            btnStatus={false}
           />
           <UpdateSelectDateTime
             opened={opened}
@@ -44,6 +64,15 @@ export const SelectDateTime: React.FC<Props> = ({ date, time, booked, limits, id
             date={date}
             time={time}
             limits={limits}
+            period={period}
+            typeModal={typeModal}
+          />
+
+          <DeleteModals
+            opened={opened}
+            close={close}
+            title={`Confirm delete?`}
+            onClick={deleteItem}
             typeModal={typeModal}
           />
         </>

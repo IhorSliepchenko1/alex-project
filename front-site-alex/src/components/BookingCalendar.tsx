@@ -11,15 +11,28 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { instance } from "@/constants";
 
-// Mock available time slots data
-const timeSlots = {
-  morning: ["9:00 AM", "10:00 AM", "11:00 AM"],
-  afternoon: ["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"],
-  evening: ["5:00 PM", "6:00 PM"]
-};
+type Rows = {
+  name: string
+}
 
-// Mock unavailable dates
+type Data = {
+  data: {
+    count: number
+    rows: Rows[]
+  }
+}
+
+type Times = {
+  booked: null | number
+  date: string
+  id: number
+  limits: number
+  period: 'morning' | 'evening' | 'afternoon'
+  time: string
+}
+
 const unavailableDates = [
   new Date(new Date().getFullYear(), new Date().getMonth(), 15),
   new Date(new Date().getFullYear(), new Date().getMonth(), 16),
@@ -42,7 +55,6 @@ const formSchema = z.object({
 });
 
 const BookingCalendar = () => {
-  const today = new Date();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -64,18 +76,15 @@ const BookingCalendar = () => {
     },
   });
 
-  // Disable dates in the past and unavailable dates
   const disabledDays = (date: Date) => {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    
-    // Check if date is in the past
+
     if (date <= yesterday) return true;
-    
-    // Check if date is in unavailable dates
-    return unavailableDates.some(unavailableDate => 
-      date.getDate() === unavailableDate.getDate() && 
-      date.getMonth() === unavailableDate.getMonth() && 
+
+    return unavailableDates.some(unavailableDate =>
+      date.getDate() === unavailableDate.getDate() &&
+      date.getMonth() === unavailableDate.getMonth() &&
       date.getFullYear() === unavailableDate.getFullYear()
     );
   };
@@ -83,8 +92,7 @@ const BookingCalendar = () => {
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
-      
-      // Limit to 5 photos
+
       if (uploadedPhotos.length + newFiles.length > 5) {
         toast({
           title: "Too many photos",
@@ -93,10 +101,9 @@ const BookingCalendar = () => {
         });
         return;
       }
-      
+
       setUploadedPhotos(prev => [...prev, ...newFiles]);
-      
-      // Create URL previews
+
       const newUrls = newFiles.map(file => URL.createObjectURL(file));
       setPhotoUrls(prev => [...prev, ...newUrls]);
     }
@@ -105,44 +112,44 @@ const BookingCalendar = () => {
   const removePhoto = (index: number) => {
     // Revoke object URL to avoid memory leaks
     URL.revokeObjectURL(photoUrls[index]);
-    
+
     setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
     setPhotoUrls(prev => prev.filter((_, i) => i !== index));
   };
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    if (!selectedDate || !selectedTime) {
-      toast({
-        title: "Incomplete booking",
-        description: "Please select both a date and time for your appointment.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setIsSubmitting(true);
-    
-    // Simulate form submission
-    setTimeout(() => {
-      console.log("Form data:", data);
-      console.log("Date:", selectedDate);
-      console.log("Time:", selectedTime);
-      console.log("Photos:", uploadedPhotos);
-      
-      setIsSubmitting(false);
-      toast({
-        title: "Booking confirmed!",
-        description: `Your appointment has been scheduled for ${selectedDate.toLocaleDateString()} at ${selectedTime}.`,
-      });
-      
-      // Reset form
-      form.reset();
-      setSelectedDate(undefined);
-      setSelectedTime(null);
-      setUploadedPhotos([]);
-      setPhotoUrls([]);
-    }, 1500);
-  };
+  // const onSubmit = (data: z.infer<typeof formSchema>) => {
+  //   if (!selectedDate || !selectedTime) {
+  //     toast({
+  //       title: "Incomplete booking",
+  //       description: "Please select both a date and time for your appointment.",
+  //       variant: "destructive",
+  //     });
+  //     return;
+  //   }
+
+  //   setIsSubmitting(true);
+
+  //   // Simulate form submission
+  //   setTimeout(() => {
+  //     console.log("Form data:", data);
+  //     console.log("Date:", selectedDate);
+  //     console.log("Time:", selectedTime);
+  //     console.log("Photos:", uploadedPhotos);
+
+  //     setIsSubmitting(false);
+  //     toast({
+  //       title: "Booking confirmed!",
+  //       description: `Your appointment has been scheduled for ${selectedDate.toLocaleDateString()} at ${selectedTime}.`,
+  //     });
+
+  //     // Reset form
+  //     form.reset();
+  //     setSelectedDate(undefined);
+  //     setSelectedTime(null);
+  //     setUploadedPhotos([]);
+  //     setPhotoUrls([]);
+  //   }, 1500);
+  // };
 
   useEffect(() => {
     // Reset selected time when date changes
@@ -156,15 +163,157 @@ const BookingCalendar = () => {
     };
   }, [photoUrls]);
 
+
+  // ЗАЛУПА ДЛЯ ВЫПАДАЮЩЕГО СПИСКА СМОТРЕТЬ, НЕ ТРОГАТЬ. КТО ПРОЧИТАЛ ТОГО РОТ ЕБАЛ!
+  const [dataSelect, setDataSelect] = useState([])
+  const [dateState, setDateState] = useState('')
+  const [period, setPeriod] = useState([])
+  const serviceType = async () => {
+    try {
+      const response: Data = await instance.get('/service-type')
+      const array = response.data.rows.map(item => item.name)
+      setDataSelect(array)
+      return response.data.rows
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
+  const [morning, setMorning] = useState<Times[]>([]);
+  const [afternoon, setAfternoon] = useState<Times[]>([]);
+  const [evening, setEvening] = useState<Times[]>([]);
+
+
+  const selectDateTime = async () => {
+    try {
+      const response: { data: Times[] } = await instance.get(`/select-date-time?date=${dateState}`)
+      setPeriod(response.data)
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  useEffect(() => {
+    serviceType()
+  }, [])
+
+  useEffect(() => {
+
+    if (dateState) {
+      selectDateTime()
+    }
+  }, [dateState])
+
+  useEffect(() => {
+    if (period.length > 0) {
+      setMorning(period.filter(p => p.period === "morning"));
+      setAfternoon(period.filter(p => p.period === "afternoon"));
+      setEvening(period.filter(p => p.period === "evening"));
+    } else {
+      setMorning([]);
+      setAfternoon([]);
+      setEvening([]);
+    }
+  }, [period]);
+
+
+  const convertDateFormat = (date: Date) => {
+    const fullDate = new Date(date)
+    const dd = `${fullDate.getDate()}`.padStart(2, "0")
+    const mm = `${(fullDate.getMonth() + 1)}`.padStart(2, "0")
+    const yyyy = fullDate.getFullYear()
+
+    setDateState(`${dd}.${mm}.${yyyy}`)
+    setSelectedDate(date)
+  }
+
+  const timeSlots = {
+    morning,
+    afternoon,
+    evening
+  };
+
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    if (!selectedDate || !selectedTime) {
+      toast({
+        title: "Incomplete booking",
+        description: "Please select both a date and time for your appointment.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (uploadedPhotos.length === 0) {
+      toast({
+        title: "Photo required",
+        description: "Please upload at least one photo.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const formData = new FormData();
+    formData.append("full_name", data.name);
+    formData.append("email", data.email);
+    formData.append("phone", data.phone || "");
+    formData.append("street", data.streetAddress);
+    formData.append("state", data.state);
+    formData.append("zip", data.zipCode);
+    formData.append("descriptions", data.notes || "");
+    formData.append("service_type", data.service);
+    formData.append("date", dateState);
+    formData.append("time", selectedTime);
+
+    uploadedPhotos.forEach((photo, index) => {
+      formData.append("uploaded", photo);
+    });
+
+    try {
+      const res = await instance.post("/consultation", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      toast({
+        title: "Booking confirmed!",
+        description: res.data.message,
+      });
+
+      // Reset form
+      form.reset();
+      setSelectedDate(undefined);
+      setSelectedTime(null);
+      setUploadedPhotos([]);
+      setPhotoUrls([]);
+    } catch (error: any) {
+      toast({
+        title: "Submission error",
+        description: error.response?.data?.message || "Something went wrong",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+
+
   return (
     <div className="bg-white rounded-2xl shadow-subtle overflow-hidden">
       <div className="grid grid-cols-1 lg:grid-cols-2">
         <div className="bg-gray-50 p-6 md:p-8">
           <h3 className="text-xl font-semibold mb-6">Select a Date & Time</h3>
-          
+
           <div className="mb-8">
             <Calendar
               mode="single"
+              onDayClick={(date) => {
+                convertDateFormat(date)
+              }}
               selected={selectedDate}
               onSelect={setSelectedDate}
               disabled={disabledDays}
@@ -175,14 +324,14 @@ const BookingCalendar = () => {
               }}
             />
           </div>
-          
+
           {selectedDate && (
             <div className="animate-fade-in">
               <h4 className="text-sm font-medium flex items-center mb-3">
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 Available Times for {selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
               </h4>
-              
+
               <div className="space-y-4">
                 {Object.entries(timeSlots).map(([period, times]) => (
                   <div key={period}>
@@ -192,19 +341,22 @@ const BookingCalendar = () => {
                     <div className="grid grid-cols-3 gap-2">
                       {times.map((time) => (
                         <button
-                          key={time}
+
+                          style={{ background: time.booked >= time.limits ? "gray" : '', color: time.booked >= time.limits ? "white" : '' }}
+                          disabled={time.booked >= time.limits}
+                          key={time.id}
                           type="button"
-                          onClick={() => setSelectedTime(time)}
+                          onClick={() => setSelectedTime(time.time)}
                           className={cn(
                             "py-2 px-2 text-sm rounded-md border border-gray-200 transition-all",
-                            selectedTime === time
+                            selectedTime === time.time
                               ? "bg-gray-900 text-white border-gray-900"
                               : "bg-white text-gray-700 hover:border-gray-300"
                           )}
                         >
                           <span className="flex items-center justify-center">
-                            <Clock className={cn("mr-1 h-3 w-3", selectedTime === time ? "text-white" : "text-gray-400")} />
-                            {time}
+                            <Clock className={cn("mr-1 h-3 w-3", selectedTime === time.time ? "text-white" : "text-gray-400")} />
+                            {time.time}
                           </span>
                         </button>
                       ))}
@@ -215,10 +367,10 @@ const BookingCalendar = () => {
             </div>
           )}
         </div>
-        
+
         <div className="p-6 md:p-8">
           <h3 className="text-xl font-semibold mb-6">Your Booking Details</h3>
-          
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -234,7 +386,7 @@ const BookingCalendar = () => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="email"
@@ -248,7 +400,7 @@ const BookingCalendar = () => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="phone"
@@ -262,7 +414,7 @@ const BookingCalendar = () => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="service"
@@ -274,23 +426,25 @@ const BookingCalendar = () => {
                         className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all"
                         {...field}
                       >
-                        <option value="bathroom-remodel">Bathroom Remodel</option>
-                        <option value="handyman">Handyman Services</option>
-                        <option value="consultation">Design Consultation</option>
+                        {
+                          dataSelect.map((name, index) => (
+                            <option key={index + name} >{name}</option>
+                          ))
+                        }
                       </select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <div className="pt-4 pb-2">
                 <h4 className="text-base font-medium flex items-center mb-3">
                   <MapPin className="mr-2 h-4 w-4" />
                   Service Address
                 </h4>
               </div>
-              
+
               <FormField
                 control={form.control}
                 name="streetAddress"
@@ -304,7 +458,7 @@ const BookingCalendar = () => {
                   </FormItem>
                 )}
               />
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -319,7 +473,7 @@ const BookingCalendar = () => {
                     </FormItem>
                   )}
                 />
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -334,7 +488,7 @@ const BookingCalendar = () => {
                       </FormItem>
                     )}
                   />
-                  
+
                   <FormField
                     control={form.control}
                     name="zipCode"
@@ -350,7 +504,7 @@ const BookingCalendar = () => {
                   />
                 </div>
               </div>
-              
+
               <div className="pt-4 pb-2">
                 <h4 className="text-base font-medium flex items-center mb-3">
                   <Camera className="mr-2 h-4 w-4" />
@@ -360,15 +514,15 @@ const BookingCalendar = () => {
                   Add up to 5 photos of the area you need help with
                 </p>
               </div>
-              
+
               <div className="border-2 border-dashed border-gray-200 rounded-lg p-4 text-center">
                 <label className="block w-full cursor-pointer">
-                  <input 
-                    type="file" 
-                    accept="image/*" 
-                    multiple 
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
                     onChange={handlePhotoUpload}
-                    className="hidden" 
+                    className="hidden"
                   />
                   <div className="flex flex-col items-center justify-center py-3">
                     <Upload className="h-8 w-8 text-gray-400 mb-2" />
@@ -377,15 +531,15 @@ const BookingCalendar = () => {
                   </div>
                 </label>
               </div>
-              
+
               {photoUrls.length > 0 && (
                 <div className="grid grid-cols-3 gap-3 mt-3">
                   {photoUrls.map((url, index) => (
                     <div key={index} className="relative rounded-md overflow-hidden h-24">
-                      <img 
-                        src={url} 
-                        alt={`Uploaded photo ${index + 1}`} 
-                        className="w-full h-full object-cover" 
+                      <img
+                        src={url}
+                        alt={`Uploaded photo ${index + 1}`}
+                        className="w-full h-full object-cover"
                       />
                       <button
                         type="button"
@@ -398,7 +552,7 @@ const BookingCalendar = () => {
                   ))}
                 </div>
               )}
-              
+
               <FormField
                 control={form.control}
                 name="notes"
@@ -406,22 +560,22 @@ const BookingCalendar = () => {
                   <FormItem>
                     <FormLabel>Project Description</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Please describe the issue or project in detail" 
-                        rows={3} 
+                      <Textarea
+                        placeholder="Please describe the issue or project in detail"
+                        rows={3}
                         className="resize-none"
-                        {...field} 
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <div className="pt-4">
-                <Button 
-                  type="submit" 
-                  className="w-full py-6 rounded-lg flex items-center justify-center" 
+                <Button
+                  type="submit"
+                  className="w-full py-6 rounded-lg flex items-center justify-center"
                   disabled={!selectedDate || !selectedTime || isSubmitting}
                 >
                   {isSubmitting ? (
@@ -439,7 +593,7 @@ const BookingCalendar = () => {
                     </span>
                   )}
                 </Button>
-                
+
                 {(!selectedDate || !selectedTime) && (
                   <p className="text-sm text-gray-500 mt-2 text-center">
                     Please select a date and time to continue

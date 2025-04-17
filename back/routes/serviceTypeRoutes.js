@@ -8,7 +8,7 @@ const { ADMIN } = ROLE;
 
 router.post("/", serviceTypeController.add);
 router.put("/:id", checkRoleMiddleware([ADMIN]), serviceTypeController.update);
-router.get("/", checkRoleMiddleware([ADMIN]), serviceTypeController.getAll);
+router.get("/", serviceTypeController.getAll);
 router.get("/:id", checkRoleMiddleware([ADMIN]), serviceTypeController.getById);
 router.delete(
   "/:id",

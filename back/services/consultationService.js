@@ -51,7 +51,7 @@ class ConsultationService {
       raw: true,
     });
 
-    if (booked > limits) {
+    if (booked >= limits) {
       throw ApiError.badRequest("Limit is full!");
     }
 
@@ -209,7 +209,6 @@ class ConsultationService {
       ],
       raw: true,
     });
-
 
     const modifiedRows = data.rows.map((message) => {
       if (!message.status_id) {

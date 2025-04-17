@@ -4,15 +4,21 @@ import { HTTP_STATUSES } from "../utils/constants.js";
 
 class SelectDateTimeController {
   add = asyncHandler(async (req, res) => {
-    const { date, time, limits } = req.body;
-    const info = await selectDateTimeService.add(date, time, limits);
+    const { date, time, limits, period } = req.body;
+    const info = await selectDateTimeService.add(date, time, limits, period);
     return res.status(HTTP_STATUSES.CREATED).json(info);
   });
 
   update = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { date, time, limits } = req.body;
-    const message = await selectDateTimeService.update(id, date, time, limits);
+    const { date, time, limits, period } = req.body;
+    const message = await selectDateTimeService.update(
+      id,
+      date,
+      time,
+      limits,
+      period
+    );
     return res.status(HTTP_STATUSES.OK).json(message);
   });
 
@@ -34,11 +40,11 @@ class SelectDateTimeController {
     return res.status(HTTP_STATUSES.OK).json(message);
   });
 
-  // delete = asyncHandler(async (req, res) => {
-  //   const { id } = req.params;
-  //   const message = await statusesService.delete(id);
-  //   return res.status(HTTP_STATUSES.OK).json(message);
-  // });
+  delete = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const message = await selectDateTimeService.delete(id);
+    return res.status(HTTP_STATUSES.OK).json(message);
+  });
 }
 
 export const selectDateTimeController = new SelectDateTimeController();

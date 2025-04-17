@@ -17,15 +17,16 @@ router.get(
   checkRoleMiddleware([ADMIN]),
   selectDateTimeController.getAll
 );
-router.get(
+// router.get(
+//   "/:id",
+//   checkRoleMiddleware([ADMIN]),
+//   selectDateTimeController.getById
+// );
+router.get("/", selectDateTimeController.getByDate);
+router.delete(
   "/:id",
   checkRoleMiddleware([ADMIN]),
-  selectDateTimeController.getById
-);
-router.get(
-  "/",
-  checkRoleMiddleware([ADMIN]),
-  selectDateTimeController.getByDate
+  selectDateTimeController.delete
 );
 
 export default router;

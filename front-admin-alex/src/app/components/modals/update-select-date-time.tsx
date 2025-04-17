@@ -1,4 +1,4 @@
-import { Modal, NumberInput, TextInput } from "@mantine/core"
+import { Modal, NumberInput, Select, TextInput } from "@mantine/core"
 import { useForm } from "@mantine/form";
 import { useNotification } from "../../hooks/useNotification/useNotification";
 import { useEffect } from "react";
@@ -6,7 +6,7 @@ import { ModalActionComponent } from "../ui/modal-action-component";
 import { errorMessages } from "../../../utils/has-error-field";
 import { useLazyGetAllSelectDateTimeQuery, useUpdateSelectDateTimeMutation } from "../../services/selectDateTimeServiceApi";
 
-type SubmitData = { date: string, time: string, limits: number }
+type SubmitData = { date: string, time: string, limits: number, period: string }
 
 type Props = {
      id: number
@@ -14,15 +14,16 @@ type Props = {
      close: () => void
      date: string
      time: string
+     period: string
      limits: number
      typeModal: "delete" | "update"
 }
 
-export const UpdateSelectDateTime: React.FC<Props> = ({ id, opened, close, date, time, limits, typeModal }) => {
+export const UpdateSelectDateTime: React.FC<Props> = ({ id, opened, close, date, time, limits, period, typeModal }) => {
 
      const form = useForm<SubmitData>({
           mode: "uncontrolled",
-          initialValues: { date, time, limits }
+          initialValues: { date, time, limits, period }
      });
 
      const [updateSelectDateTime, { isLoading }] = useUpdateSelectDateTimeMutation()
@@ -71,7 +72,12 @@ export const UpdateSelectDateTime: React.FC<Props> = ({ id, opened, close, date,
                          key={form.key("limits")}
                          {...form.getInputProps("limits")}
                     />
-
+                    <Select
+                         label="Period"
+                         key={form.key("period")}
+                         {...form.getInputProps("period")}
+                         data={['morning', 'afternoon', 'evening']}
+                    />
 
                     <ModalActionComponent
                          disabled={!form.isDirty()}
