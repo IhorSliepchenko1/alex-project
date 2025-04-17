@@ -1,5 +1,6 @@
 import { ApiError } from "../error/ApiError.js";
 import { SelectDateTime, Consultation } from "../models/models.js";
+import { Op } from "sequelize";
 
 class SelectDateTimeService {
   async add(date, time, limits) {
@@ -15,24 +16,39 @@ class SelectDateTimeService {
       throw ApiError.badRequest("SelectDateTime already exists!");
     }
 
-    const selectDateTime = await SelectDateTime.create({ date, time, limits });
-    return selectDateTime;
+    await SelectDateTime.create({ date, time, limits });
+    return { message: "Create successfully!" };
   }
 
   async update(id, date, time, limits) {
-    const find = await SelectDateTime.findOne({
-      where: { date, time },
-    });
+    const find = await SelectDateTime.findOne({ where: { id } });
 
     if (!find) {
       throw ApiError.badRequest("SelectDateTime not found!");
     }
 
+    // Опционально: проверка на конфликт другой записи с тем же date + time
+    if (date && time) {
+      const duplicate = await SelectDateTime.findOne({
+        where: {
+          date,
+          time,
+          id: { [Op.ne]: id }, // не учитывать саму себя
+        },
+      });
+
+      if (duplicate) {
+        throw ApiError.badRequest(
+          "Another SelectDateTime with same date/time exists!"
+        );
+      }
+    }
+
     await SelectDateTime.update(
       {
-        date: date ? date : undefined,
-        time: time ? time : undefined,
-        limits: limits ? limits : undefined,
+        date: date ?? find.date,
+        time: time ?? find.time,
+        limits: limits ?? find.limits,
       },
       { where: { id } }
     );
@@ -40,17 +56,11 @@ class SelectDateTimeService {
     return { message: "SelectDateTime updated successfully!" };
   }
 
-  async getAll(limit, page) {
-    page = page || 1;
-    limit = limit || 20;
-    let offset = page * limit - limit;
-
+  async getAll() {
     const data = await SelectDateTime.findAndCountAll({
-      page,
-      limit,
-      offset,
       order: [["createdAt", "DESC"]],
     });
+    console.log(data);
     return data;
   }
 

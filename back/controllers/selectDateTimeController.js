@@ -17,8 +17,8 @@ class SelectDateTimeController {
   });
 
   getAll = asyncHandler(async (req, res) => {
-    const { limit, page } = req.query;
-    const data = await selectDateTimeService.getAll(limit, page);
+    // const { limit, page } = req.query;
+    const data = await selectDateTimeService.getAll();
     return res.status(HTTP_STATUSES.OK).json(data);
   });
 
@@ -29,7 +29,7 @@ class SelectDateTimeController {
   });
 
   getByDate = asyncHandler(async (req, res) => {
-    const { date } = req.body;
+    const { date } = req.query;
     const message = await selectDateTimeService.getByDate(date);
     return res.status(HTTP_STATUSES.OK).json(message);
   });

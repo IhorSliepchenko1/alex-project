@@ -101,11 +101,11 @@ export const Consultation = () => {
                     </Table.Tr>
                ));
           }
-     }, [data, formatDate, selectStatusValue]);
+     }, [data, formatDate, selectStatusValue, isLoading, statusLoading]);
 
      return (
           <>
-               {isLoading && statusLoading ? (
+               {isLoading ? (
                     <LoaderComponent />
                ) : (
                     <div className="flex flex-col justify-between items-center min-h-[90vh] w-full">

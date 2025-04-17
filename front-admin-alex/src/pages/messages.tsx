@@ -75,12 +75,12 @@ export const Messages = () => {
                     </Table.Tr>
                ));
           }
-     }, [data, refetch])
+     }, [data, refetch, isLoading, statusLoading])
 
      return (
           <>
                {
-                    isLoading && statusLoading
+                    isLoading
                          ? <LoaderComponent />
                          :
                          <div className="flex flex-col justify-between items-center min-h-[90vh] w-full">

@@ -4,6 +4,7 @@ import { FaUsers } from "react-icons/fa6";
 import { CiBoxList } from "react-icons/ci";
 import { MdMessage } from "react-icons/md";
 import { BiSolidMessageAltDetail } from "react-icons/bi";
+import { SiDatefns } from "react-icons/si";
 
 export const data = (logoutSession: () => void) => {
 
@@ -36,6 +37,12 @@ export const data = (logoutSession: () => void) => {
                label: "Service type",
                icon: CiBoxList,
                link: "/service-type",
+               access: [ROLES.ADMIN]
+          },
+          {
+               label: "Date-time",
+               icon: SiDatefns ,
+               link: "/select-date-time",
                access: [ROLES.ADMIN]
           },
 

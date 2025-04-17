@@ -7,7 +7,7 @@ import { ROLE } from "../utils/constants.js";
 const router = express.Router();
 const { ADMIN, USER } = ROLE;
 
-router.post("/", checkRoleMiddleware([ADMIN]), consultationController.add);
+router.post("/", consultationController.add);
 router.get(
   "/:id",
   checkRoleMiddleware([ADMIN]),

@@ -16,6 +16,7 @@ import { Statuses } from "./pages/statuses";
 import { Messages } from "./pages/messages";
 import { Consultation } from "./pages/consultation";
 import { ServiceType } from "./pages/service-type";
+import { SelectDateTime } from "./pages/selectDateTime";
 
 const container = document.getElementById("root")
 const router = createBrowserRouter([
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: "/service-type",
         element: <ServiceType />
+      },
+      {
+        path: "/select-date-time",
+        element: <SelectDateTime />
       },
 
     ],
