@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -44,9 +44,7 @@ const formSchema = z.object({
   name: z.string().min(2, "Name is required"),
   email: z.string().email("Valid email is required"),
   phone: z.string().optional(),
-  service: z.string({
-    required_error: "Please select a service type",
-  }),
+  service: z.string().min(1, "Please select a service type"), 
   streetAddress: z.string().min(5, "Street address is required"),
   city: z.string().min(2, "City is required"),
   state: z.string().min(2, "State is required"),
@@ -54,12 +52,14 @@ const formSchema = z.object({
   notes: z.string().optional(),
 });
 
+
 const BookingCalendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<File[]>([]);
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -67,7 +67,7 @@ const BookingCalendar = () => {
       name: "",
       email: "",
       phone: "",
-      service: "bathroom-remodel",
+      service: "",
       streetAddress: "",
       city: "",
       state: "",
@@ -110,53 +110,16 @@ const BookingCalendar = () => {
   };
 
   const removePhoto = (index: number) => {
-    // Revoke object URL to avoid memory leaks
     URL.revokeObjectURL(photoUrls[index]);
 
     setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
     setPhotoUrls(prev => prev.filter((_, i) => i !== index));
   };
 
-  // const onSubmit = (data: z.infer<typeof formSchema>) => {
-  //   if (!selectedDate || !selectedTime) {
-  //     toast({
-  //       title: "Incomplete booking",
-  //       description: "Please select both a date and time for your appointment.",
-  //       variant: "destructive",
-  //     });
-  //     return;
-  //   }
-
-  //   setIsSubmitting(true);
-
-  //   // Simulate form submission
-  //   setTimeout(() => {
-  //     console.log("Form data:", data);
-  //     console.log("Date:", selectedDate);
-  //     console.log("Time:", selectedTime);
-  //     console.log("Photos:", uploadedPhotos);
-
-  //     setIsSubmitting(false);
-  //     toast({
-  //       title: "Booking confirmed!",
-  //       description: `Your appointment has been scheduled for ${selectedDate.toLocaleDateString()} at ${selectedTime}.`,
-  //     });
-
-  //     // Reset form
-  //     form.reset();
-  //     setSelectedDate(undefined);
-  //     setSelectedTime(null);
-  //     setUploadedPhotos([]);
-  //     setPhotoUrls([]);
-  //   }, 1500);
-  // };
-
   useEffect(() => {
-    // Reset selected time when date changes
     setSelectedTime(null);
   }, [selectedDate]);
 
-  // Clean up object URLs when component unmounts
   useEffect(() => {
     return () => {
       photoUrls.forEach(url => URL.revokeObjectURL(url));
@@ -164,7 +127,6 @@ const BookingCalendar = () => {
   }, [photoUrls]);
 
 
-  // ЗАЛУПА ДЛЯ ВЫПАДАЮЩЕГО СПИСКА СМОТРЕТЬ, НЕ ТРОГАТЬ. КТО ПРОЧИТАЛ ТОГО РОТ ЕБАЛ!
   const [dataSelect, setDataSelect] = useState([])
   const [dateState, setDateState] = useState('')
   const [period, setPeriod] = useState([])
@@ -199,6 +161,8 @@ const BookingCalendar = () => {
   useEffect(() => {
     serviceType()
   }, [])
+
+
 
   useEffect(() => {
 
@@ -255,6 +219,7 @@ const BookingCalendar = () => {
       return;
     }
 
+
     setIsSubmitting(true);
 
     const formData = new FormData();
@@ -292,12 +257,16 @@ const BookingCalendar = () => {
     } catch (error: any) {
       toast({
         title: "Submission error",
-        description: error.response?.data?.message || "Something went wrong",
+        description: "Something went wrong",
         variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
+
   };
 
 
@@ -414,7 +383,6 @@ const BookingCalendar = () => {
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
                 name="service"
@@ -426,17 +394,19 @@ const BookingCalendar = () => {
                         className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all"
                         {...field}
                       >
-                        {
-                          dataSelect.map((name, index) => (
-                            <option key={index + name} >{name}</option>
-                          ))
-                        }
+                        <option value="">-- Select a service --</option> {/* 👈 value пустая строка */}
+                        {dataSelect.map((name, index) => (
+                          <option key={index + name} value={name}>
+                            {name}
+                          </option>
+                        ))}
                       </select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
 
               <div className="pt-4 pb-2">
                 <h4 className="text-base font-medium flex items-center mb-3">
@@ -518,12 +488,14 @@ const BookingCalendar = () => {
               <div className="border-2 border-dashed border-gray-200 rounded-lg p-4 text-center">
                 <label className="block w-full cursor-pointer">
                   <input
+                    ref={fileInputRef}
                     type="file"
                     accept="image/*"
                     multiple
                     onChange={handlePhotoUpload}
                     className="hidden"
                   />
+
                   <div className="flex flex-col items-center justify-center py-3">
                     <Upload className="h-8 w-8 text-gray-400 mb-2" />
                     <p className="text-sm font-medium">Click to upload photos</p>
